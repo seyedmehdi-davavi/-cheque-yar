@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>چک و سفته یار</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #064e3b;
+            --primary-dark: #022c22;
+            --gold: #d97706;
+            --gold-light: #fef3c7;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Vazirmatn', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding-bottom: 70px; }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: #fff;
+            padding: 24px 20px 20px;
+            text-align: center;
+            border-bottom: 4px solid var(--gold);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        header h1 { font-size: 1.5rem; color: #fbbf24; margin-bottom: 6px; }
+        header p { font-size: 0.85rem; opacity: 0.9; }
+
+        .nav-tabs {
+            display: flex;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 14px 6px;
+            border: none;
+            background: transparent;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--gold);
+            background: #f0fdf4;
+        }
+
+        .container { max-width: 540px; margin: 0 auto; padding: 16px; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f1f5f9;
+            color: var(--primary);
+            font-size: 1.05rem;
+            font-weight: 800;
+        }
+
+        .form-group { margin-bottom: 14px; }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #334155; }
+        input, select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: #fff;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, var(--gold), #b45309);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(217, 119, 6, 0.3);
+            transition: opacity 0.2s;
+        }
+        .btn:active { opacity: 0.9; }
+
+        .result-box {
+            display: none;
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            background: #ecfdf5;
+            border: 1.5px solid #a7f3d0;
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 0.9rem;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+        .result-row:last-child { border-bottom: none; }
+        .result-total {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--primary);
+            padding-top: 10px;
+            margin-top: 6px;
+            border-top: 2px solid #10b981;
+        }
+
+        .law-item {
+            background: #f8fafc;
+            border-right: 4px solid var(--gold);
+            padding: 12px 14px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            font-size: 0.88rem;
+            line-height: 1.7;
+        }
+        .law-title { font-weight: 800; color: var(--primary); margin-bottom: 4px; display: block; }
+
+        .step-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            width: 22px;
+            height: 22px;
+            line-height: 22px;
+            text-align: center;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            margin-left: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>⚖️ چک و سفته یار</h1>
+        <p>سامانه جامع محاسبات قضایی و راهنمای حقوقی اسناد تجاری</p>
+    </header>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="openTab('calc-delay')">خسارت تأخیر</button>
+        <button class="tab-btn" onclick="openTab('calc-costs')">هزینه‌های دادرسی</button>
+        <button class="tab-btn" onclick="openTab('guide-sayad')">چک صیادی</button>
+        <button class="tab-btn" onclick="openTab('guide-sefteh')">راهنمای سفته</button>
+    </div>
+
+    <div class="container">
+        
+        <!-- Tab 1: Delay Penalty Calculator -->
+        <div id="calc-delay" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <span>📊</span> محاسبه خسارت تأخیر تأدیه (شاخص بانک مرکزی)
+                </div>
+                <div class="form-group">
+                    <label>نوع سند تجاری:</label>
+                    <select id="docType">
+                        <option value="cheque">چک (مبدأ: تاریخ سررسید مندرج در چک)</option>
+                        <option value="sefteh">سفته (مبدأ: تاریخ واخواست / مطالبه رسمی)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>مبلغ اسمی سند (تومان):</label>
+                    <input type="number" id="baseAmount" placeholder="مثال: 50000000" />
+                </div>
+                <div class="form-group">
+                    <label>سال سررسید / واخواست:</label>
+                    <select id="startYear"></select>
+                </div>
+                <div class="form-group">
+                    <label>سال وصول / روز:</label>
+                    <select id="endYear"></select>
+                </div>
+                <button class="btn" onclick="calcDelay()">محاسبه خسارت به نرخ روز</button>
+
+                <div id="delayResult" class="result-box">
+                    <div class="result-row">
+                        <span>مبلغ اصل سند:</span>
+                        <strong id="resBase">0 تومان</strong>
+                    </div>
+                    <div class="result-row">
+                        <span>شاخص مبدأ / شاخص مقصد:</span>
+                        <strong id="resIndex">1 / 1</strong>
+                    </div>
+                    <div class="result-row">
+                        <span>میزان خسارت تأخیر:</span>
+                        <strong id="resDelayFee" style="color: #b45309;">0 تومان</strong>
+                    </div>
+                    <div class="result-row result-total">
+                        <span>مجموع قابل پرداخت:</span>
+                        <span id="resTotal">0 تومان</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Court Costs & Enforcement -->
+        <div id="calc-costs" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span>🏛️</span> محاسبه هزینه‌های دادرسی، واخواست و اجرا
+                </div>
+                <div class="form-group">
+                    <label>مبلغ خواسته (تومان):</label>
+                    <input type="number" id="claimAmount" placeholder="مثال: 100000000" />
+                </div>
+                <button class="btn" onclick="calcCosts()">محاسبه هزینه‌ها</button>
+
+                <div id="costsResult" class="result-box">
+                    <div class="result-row">
+                        <span>هزینه دادرسی مرحله بدوی (دادگاه):</span>
+                        <strong id="resBadvi">0 تومان</strong>
+                    </div>
+                    <div class="result-row">
+                        <span>هزینه دادرسی تجدیدنظر (۴.۵٪):</span>
+                        <strong id="resTajdid">0 تومان</strong>
+                    </div>
+                    <div class="result-row">
+                        <span>هزینه واخواست سفته (۲ درصد):</span>
+                        <strong id="resVakhast">0 تومان</strong>
+                    </div>
+                    <div class="result-row">
+                        <span>نیم‌عشر اجرایی (۵٪ اجرا):</span>
+                        <strong id="resNimOshr">0 تومان</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Sayadi Cheque Guide -->
+        <div id="guide-sayad" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span>⚡</span> مسیر مستقیم صدور اجرائیه (ماده ۲۳)
+                </div>
+                <div class="law-item">
+                    <span class="law-title"><span class="step-badge">۱</span> اخذ گواهی عدم پرداخت</span>
+                    مراجعه به بانک و ثبت برگشت چک در سامانه یکپارچه بانک مرکزی با اخذ کد رهگیری مخصوص چک صیادی.
+                </div>
+                <div class="law-item">
+                    <span class="law-title"><span class="step-badge">۲</span> ثبت درخواست در دفاتر خدمات الکترونیک قضایی</span>
+                    درخواست صدور مستقیم اجرائیه دادگاه وفق ماده ۲۳ قانون اصلاح قانون صدور چک بدون نیاز به تقدیم دادخواست ماهوی و پرداخت ۳.۵٪ هزینه دادرسی.
+                </div>
+                <div class="law-item">
+                    <span class="law-title"><span class="step-badge">۳</span> مهلت ۱۰ روزه مدیون</span>
+                    پس از ابلاغ اجرائیه، صادرکننده ۱۰ روز فرصت دارد پرداخت کند؛ در غیر این‌صورت توقیف کلیه حساب‌ها، اموال و ممنوع‌الخروجی صادر می‌شود.
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Sefteh Legal Guide -->
+        <div id="guide-sefteh" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <span>📜</span> مواعد حیاتی واخواست و مطالبه سفته
+                </div>
+                <div class="law-item">
+                    <span class="law-title">موعود واخواست (واخواست‌نامه):</span>
+                    ظرف <strong>۱۰ روز از تاریخ سررسید</strong> سفته باید واخواست شود تا بتوان از مزایای اسناد تجاری (توقیف اموال بدون خسارت احتمالی) بهره‌مند شد.
+                </div>
+                <div class="law-item">
+                    <span class="law-title">اقامه دعوا علیه ظهرنویس‌ها و ضامن‌ها:</span>
+                    ظرف <strong>۱ سال از تاریخ واخواست</strong> باید در دادگاه اقامه دعوا شود؛ در غیر این صورت حق مراجعه به ضامن و ظهرنویس ساقط می‌گردد.
+                </div>
+                <div class="law-item">
+                    <span class="law-title">مبدأ خسارت تأخیر تأدیه سفته:</span>
+                    برخلاف چک، مبدأ خسارت تأخیر سفته تاریخ سررسید نیست، بلکه از تاریخ <strong>واخواست یا مطالبه قانونی (ارسال اظهارنامه)</strong> محاسبه می‌شود.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const indices = {
+            1390: 31.8, 1391: 41.5, 1392: 55.9, 1393: 64.6, 1394: 72.3,
+            1395: 79.2, 1396: 86.8, 1397: 113.9, 1398: 161.0, 1399: 219.7,
+            1400: 306.9, 1401: 449.6, 1402: 683.4, 1403: 935.0, 1404: 1260.0, 1405: 1650.0
+        };
+
+        function initYears() {
+            const start = document.getElementById('startYear');
+            const end = document.getElementById('endYear');
+            for (let y = 1390; y <= 1405; y++) {
+                const opt1 = new Option(y, y);
+                const opt2 = new Option(y, y);
+                start.add(opt1);
+                end.add(opt2);
+            }
+            start.value = 1400;
+            end.value = 1405;
+        }
+
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function formatNumber(num) {
+            return Math.round(num).toLocaleString('fa-IR') + ' تومان';
+        }
+
+        function calcDelay() {
+            const amount = parseFloat(document.getElementById('baseAmount').value);
+            const yStart = parseInt(document.getElementById('startYear').value);
+            const yEnd = parseInt(document.getElementById('endYear').value);
+
+            if (!amount || amount <= 0) {
+                alert('لطفاً مبلغ معتبر وارد نمایید.');
+                return;
+            }
+            if (yEnd < yStart) {
+                alert('سال وصول نمی‌تواند قبل از سال سررسید باشد.');
+                return;
+            }
+
+            const idxStart = indices[yStart] || 1;
+            const idxEnd = indices[yEnd] || 1;
+            const updatedAmount = (amount * idxEnd) / idxStart;
+            const delayFee = updatedAmount - amount;
+
+            document.getElementById('resBase').innerText = formatNumber(amount);
+            document.getElementById('resIndex').innerText = `${idxStart} / ${idxEnd}`;
+            document.getElementById('resDelayFee').innerText = formatNumber(delayFee);
+            document.getElementById('resTotal').innerText = formatNumber(updatedAmount);
+            document.getElementById('delayResult').style.display = 'block';
+        }
+
+        function calcCosts() {
+            const amount = parseFloat(document.getElementById('claimAmount').value);
+            if (!amount || amount <= 0) {
+                alert('لطفاً مبلغ خواسته را وارد کنید.');
+                return;
+            }
+
+            let badvi = 0;
+            if (amount <= 20000000) {
+                badvi = amount * 0.025;
+            } else {
+                badvi = (20000000 * 0.025) + ((amount - 20000000) * 0.035);
+            }
+
+            const tajdid = amount * 0.045;
+            const vakhast = amount * 0.02;
+            const nimOshr = amount * 0.05;
+
+            document.getElementById('resBadvi').innerText = formatNumber(badvi);
+            document.getElementById('resTajdid').innerText = formatNumber(tajdid);
+            document.getElementById('resVakhast').innerText = formatNumber(vakhast);
+            document.getElementById('resNimOshr').innerText = formatNumber(nimOshr);
+            document.getElementById('costsResult').style.display = 'block';
+        }
+
+        window.onload = initYears;
+    </script>
+</body>
+</html>
